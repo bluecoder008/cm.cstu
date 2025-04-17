@@ -1,0 +1,38 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: classschedules.cstu.edu
+spec:
+  group: cstu.edu
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                courseName:
+                  type: string
+                university:
+                  type: string
+                schedule:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      day:
+                        type: string
+                      time:
+                        type: string
+  scope: Namespaced
+  names:
+    plural: classschedules
+    singular: classschedule
+    kind: ClassSchedule
+    shortNames:
+      - csched
+

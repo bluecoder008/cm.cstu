@@ -1,0 +1,85 @@
+
+1. Install kubebuilder:
+$ brew install kubebuilder
+   Install GoLang
+$ brew install go
+
+2. Create a new project
+$ mkdir classschedule-operator
+$ cd classschedule-operator
+$ kubebuilder init --domain cstu.edu --repo github.com/bluecoder008/cm.cstu/classschedule-operator
+
+
+3. Create API + Controller for ClassSchedule
+$ kubebuilder create api --group edu --version v1 --kind ClassSchedule
+
+This genertes:
+  o CRD schema: api/v1/classschedule_types.go
+  o Controller logic: controllers/classschedule_controller.go
+  o Sample CR: config/samples/edu_v1_classschedule.yaml
+
+4. Define your spec in api/v1/classschedule_types.go
+
+Add: 
+type ClassScheduleSpec struct {
+	CourseName string `json:"courseName,omitempty"`
+	University string `json:"university,omitempty"`
+	Schedule   []ScheduleItem `json:"schedule,omitempty"`
+}
+
+type ScheduleItem struct {
+	Day  string `json:"day,omitempty"`
+	Time string `json:"time,omitempty"`
+}
+
+Run:
+$ make generate
+$ make manifests
+
+5. Implement logic in controller (controllers/classschedule_controller.go)
+$ mkdir controllers
+Create a new file as controllers/classschedule_controller.go with:
+func (r *ClassScheduleReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	var cs edu.ClassSchedule
+	if err := r.Get(ctx, req.NamespacedName, &cs); err != nil {
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	log := log.FromContext(ctx)
+	log.Info("Reconciling ClassSchedule", "Course", cs.Spec.CourseName)
+
+	// Here you could trigger scheduling jobs, notify systems, etc.
+
+	return ctrl.Result{}, nil
+}
+
+6. Build & Deploy to Cluster
+
+$ make docker-build docker-push IMG=2023devops/classschedule-operator:v0.1.0
+$ make deploy IMG=2023devops/classschedule-operator:v0.1.0
+
+7. Test with a CR
+$ vi  config/samples/edu_v1_classschedule.yaml
+add:  
+  courseName: Cloud Management
+  university: CSTU
+  schedule:
+    - day: Wednesday
+      time: 7:30-9:30pm
+    - day: Saturday
+      time: 9:00-10:30am
+$ kubectl apply -f config/samples/edu_v1_classschedule.yaml
+
+$ kubectl logs -l control-plane=controller-manager -n classschedule-operator-system
+
+2025-04-13T03:27:08Z	INFO	controller-runtime.metrics	Starting metrics server
+2025-04-13T03:27:08Z	INFO	setup	disabling http/2
+2025-04-13T03:27:08Z	INFO	starting server	{"name": "health probe", "addr": "[::]:8081"}
+I0413 03:27:08.995101       1 leaderelection.go:257] attempting to acquire leader lease classschedule-operator-system/c9383856.cstu.edu...
+I0413 03:27:09.003508       1 leaderelection.go:271] successfully acquired lease classschedule-operator-system/c9383856.cstu.edu
+2025-04-13T03:27:09Z	DEBUG	events	classschedule-operator-controller-manager-79b84c98b6-nc926_37803602-cab8-4c44-89d9-13405bae974b became leader	{"type": "Normal", "object": {"kind":"Lease","namespace":"classschedule-operator-system","name":"c9383856.cstu.edu","uid":"ab4ae5b2-d0a3-455b-920a-337bb594c0a5","apiVersion":"coordination.k8s.io/v1","resourceVersion":"985630"}, "reason": "LeaderElection"}
+2025-04-13T03:27:09Z	INFO	Starting EventSource	{"controller": "classschedule", "controllerGroup": "edu.cstu.edu", "controllerKind": "ClassSchedule", "source": "kind source: *v1.ClassSchedule"}
+2025-04-13T03:27:09Z	INFO	Starting Controller	{"controller": "classschedule", "controllerGroup": "edu.cstu.edu", "controllerKind": "ClassSchedule"}
+2025-04-13T03:27:09Z	INFO	Starting workers	{"controller": "classschedule", "controllerGroup": "edu.cstu.edu", "controllerKind": "ClassSchedule", "worker count": 1}
+2025-04-13T03:27:09Z	INFO	controller-runtime.metrics	Serving metrics server	{"bindAddress": ":8443", "secure": true}
+Error from server (BadRequest): container "manager" in pod "classschedule-operator-controller-manager-d4cf4df8b-qbfmm" is waiting to start: ContainerCreating

@@ -1,0 +1,12 @@
+apiVersion: cstu.edu/v1
+kind: ClassSchedule
+metadata:
+  name: cloud-management-spring
+spec:
+  courseName: Cloud Management
+  university: CSTU
+  schedule:
+    - day: Wednesday
+      time: 7:30-9:30pm
+    - day: Saturday
+      time: 9:00-10:30am

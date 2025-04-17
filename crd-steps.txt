@@ -1,0 +1,30 @@
+# CRD
+
+$ kubectl apply -f cloudmgmt.classschedules.yaml 
+customresourcedefinition.apiextensions.k8s.io/classschedules.cstu.edu created
+
+$ kubectl api-resources | grep cstu
+classschedules                      csched       cstu.edu/v1                       true         ClassSchedule
+NAME                                SHORTNAMES   APIVERSION                        NAMESPACED   KIND
+
+$ kubectl apply -f cloud-management-cr.yaml
+
+apiVersion: cstu.edu/v1
+kind: ClassSchedule
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cstu.edu/v1","kind":"ClassSchedule","metadata":{"annotations":{},"name":"cloud-management-spring","namespace":"default"},"spec":{"courseName":"Cloud Management","schedule":[{"day":"Wednesday","time":"7:30-9:30pm"},{"day":"Saturday","time":"9:00-10:30am"}],"university":"CSTU"}}
+  creationTimestamp: "2025-04-12T22:10:01Z"
+  generation: 1
+  name: cloud-management-spring
+  namespace: default
+  resourceVersion: "977581"
+  uid: e9f999ab-4f4f-43b7-a0d6-23342a0238c9
+spec:
+  courseName: Cloud Management
+  schedule:
+  - day: Wednesday
+    time: 7:30-9:30pm
+  - day: Saturday
+    time: 9:00-10:30am
