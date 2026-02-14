@@ -64,10 +64,10 @@ add:
   courseName: Cloud Management
   university: CSTU
   schedule:
-    - day: Wednesday
+    - day: Thursday
       time: 7:30-9:30pm
     - day: Saturday
-      time: 9:00-10:30am
+      time: 4:20-5:50am
 $ kubectl apply -f config/samples/edu_v1_classschedule.yaml
 
 $ kubectl logs -l control-plane=controller-manager -n classschedule-operator-system

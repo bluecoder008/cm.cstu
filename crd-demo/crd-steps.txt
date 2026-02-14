@@ -14,8 +14,7 @@ kind: ClassSchedule
 metadata:
   annotations:
     kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"cstu.edu/v1","kind":"ClassSchedule","metadata":{"annotations":{},"name":"cloud-management-spring","namespace":"default"},"spec":{"courseName":"Cloud Management","schedule":[{"day":"Wednesday","time":"7:30-9:30pm"},{"day":"Saturday","time":"9:00-10:30am"}],"university":"CSTU"}}
-  creationTimestamp: "2025-04-12T22:10:01Z"
+      {"apiVersion":"cstu.edu/v1","kind":"ClassSchedule","metadata":{"annotations":{},"name":"cloud-management-spring","namespace":"default"},"spec":{"courseName":"Cloud Management","schedule":[{"day":"Thursday","time":"7:30-9:30pm"},{"day":"Saturday","time":"4:20-5:50pm"}],"university":"CSTU"}}
   generation: 1
   name: cloud-management-spring
   namespace: default
@@ -24,7 +23,7 @@ metadata:
 spec:
   courseName: Cloud Management
   schedule:
-  - day: Wednesday
+  - day: Thursday
     time: 7:30-9:30pm
   - day: Saturday
-    time: 9:00-10:30am
+    time: 4:20-5:50pm
