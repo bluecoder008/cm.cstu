@@ -39,6 +39,9 @@ $ make manifests
 5. Implement logic in controller (controllers/classschedule_controller.go)
 $ mkdir controllers
 Create a new file as controllers/classschedule_controller.go with:
+
+package controllers
+
 func (r *ClassScheduleReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	var cs edu.ClassSchedule
 	if err := r.Get(ctx, req.NamespacedName, &cs); err != nil {
@@ -53,7 +56,7 @@ func (r *ClassScheduleReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	return ctrl.Result{}, nil
 }
 
-6. Build & Deploy to Cluster
+6. Build & Deploy to Cluster (make sure Docker login / Docker pull works)
 
 $ make docker-build docker-push IMG=2023devops/classschedule-operator:v0.1.0
 $ make deploy IMG=2023devops/classschedule-operator:v0.1.0
